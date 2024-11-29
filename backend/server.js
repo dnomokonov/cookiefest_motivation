@@ -9,3 +9,14 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Start server on http://localhost:${port}`)
 })
+
+// Маршрут для входа (/login)
+app.post('/login', (req, res) => {
+    const { login, password } = req.body;
+
+    if (login === 'admin' && password === 'password123') {
+    res.json({ message: 'Login successful' });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
+  }
+});
