@@ -1,23 +1,41 @@
 import { createRouter, createWebHistory} from 'vue-router'
-import home from '../views/Home.vue'
-import profile from '../views/Profile.vue'
-import rating from '../views/Rating.vue'
+import Home from '../views/Home.vue'
+import Profile from '../views/Profile.vue'
+import Rating from '../views/Rating.vue'
+import Login from '../views/Login.vue'
+import Singup from '../views/Singup.vue'
+import NotFound from '../views/NotFound.vue'
 
 const routes = [
     {
         path: '/',
         name: 'home',
-        component: home,
+        component: Home,
     },
     {
         path: '/profile',
         name: 'profile',
-        component: profile,
+        component: Profile,
     },
     {
         path: '/rating',
         name: 'rating',
-        component: rating,
+        component: Rating,
+    },
+    {
+        path: '/auth/login',
+        name: 'login',
+        component: Login,
+    },
+    {
+        path: '/auth/singup',
+        name: 'singup',
+        component: Singup,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'not-found',
+        component: NotFound,
     }
 ]
 
