@@ -149,6 +149,19 @@ app.post('/signin', [
   }
 });
 
+app.get('/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.status(200).json(result.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Internal server error',
+      description: e.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Start server on http://localhost:${port}`);
 });
