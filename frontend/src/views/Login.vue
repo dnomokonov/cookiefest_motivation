@@ -128,4 +128,6 @@
   .login_image img {
     width: 680px;
   }
+
 </style>
+
