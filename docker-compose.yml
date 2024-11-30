@@ -38,6 +38,9 @@ services:
       - backend
     ports:
       - "8080:80"
+    volumes:
+    - ./frontend/dist:/usr/share/nginx/html
+    - ./frontend/nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
   postgres-data:
