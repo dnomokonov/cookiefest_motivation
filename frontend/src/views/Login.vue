@@ -37,7 +37,7 @@ import Button from '@components/BaseButton.vue'
             </form>
             <p>
                 Еще нет аккаунта?
-                <a href="/register">Зарегистрироваться</a>
+                <a href="/auth/singup">Зарегистрироваться</a>
             </p>
         </div>
         <div class="login_illustration">
@@ -51,7 +51,6 @@ import Button from '@components/BaseButton.vue'
 </template>
 
 <style scoped>
-/* Стили для блока входа */
     .login_block {
         width: 100%;
         height: 80vh;
@@ -70,11 +69,13 @@ import Button from '@components/BaseButton.vue'
         max-width: 350px;
         display: flex;
         flex-direction: column;
+
     }
 
     .login_form h1 {
-        font-size: 36px;
-        margin-bottom: 80px;
+        font-size: 3rem;
+        margin-bottom: 20px;
+        font-weight: bold;
     }
 
     .login_form button {
@@ -85,17 +86,26 @@ import Button from '@components/BaseButton.vue'
         margin-bottom: 20px;
     }
 
+
     input {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
+        height: 40px;
+        padding: 8px 12px;
+        font-size: 1rem;
+        border: 0px solid #ccc;
+        border-radius: 10px; 
+        background-color: #E8E8E8; 
+        color: #000000;
+        font-family: 'Montserrat Alternates', sans-serif;
     }
 
     input:focus {
         border-color: #6c757d;
         outline: none;
+    }
+
+    input::placeholder{
+        color: #000000;
     }
 
     p {
