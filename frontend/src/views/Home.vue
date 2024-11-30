@@ -2,6 +2,11 @@
     import Header from '@components/TheHeader.vue'
     import Footer from '@components/TheFooter.vue'
     import Button from '@components/BaseButton.vue'
+
+    const clickButton = () => {
+        window.location.href = '/auth/singup';
+    }
+
 </script>
 
 <template>
@@ -13,7 +18,7 @@
                 <h1>balance</h1>
                 <h3>Современная система мотивации</h3>
                 <p>Платформа, которая позволяет сотрудникам в режиме онлайн видеть результаты своего труда и заработанные показатели. </p>
-                <Button titleButton="Приступить" style="width: 180px; height: 50px;"/>
+                <Button titleButton="Приступить" @click="clickButton" style="width: 180px; height: 50px;"/>
             </div>
             <div class="welcome_preview">
                 <img src="@assets/welcomeblock.png" alt="welcomeblock">
@@ -35,7 +40,6 @@
                 <img src="@assets/people1.png" alt="people1">
             </div>
         </div>
-        
     </div>
 
     <div class="rating_block">
