@@ -5,7 +5,7 @@
 </script>
 
 <template>
-    <Header/>
+    <Header :isAuthenticated="false"/>
 
     <div class="welcome_block">
         <div class="content">
