@@ -1,60 +1,59 @@
 <script setup>
-import Header from '@components/TheHeader.vue'
-import Footer from '@components/TheFooter.vue'
-import Button from '@components/BaseButton.vue'
-import { ref } from 'vue';
-import axios from 'axios';
+  import Header from '@components/TheHeader.vue'
+  import Button from '@components/BaseButton.vue'
+  import { ref } from 'vue'
+  import axios from 'axios'
 
-const fullName = ref('');
-const login = ref('');
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+  const fullName = ref('')
+  const login = ref('')
+  const email = ref('')
+  const branch = ref('')
+  const password = ref('')
+  const confirmPassword = ref('')
 
-const handleRegister = async () => {
-  if (!fullName.value || !login.value || !email.value || !password.value || !confirmPassword.value) {
-    alert('Пожалуйста, заполните все поля.');
-    return;
-  }
-
-  if (password.value !== confirmPassword.value) {
-    alert('Пароли не совпадают.');
-    return;
-  }
-
-  const [name, surname, patronymic] = fullName.value.split(' ');
-
-  try {
-    const response = await axios.post('http://localhost:3000/signup', {
-      name,
-      surname,
-      patronymic,
-      login: login.value,
-      email: email.value,
-      password: password.value,
-      confirmPassword: confirmPassword.value,
-    });
-
-    if (response.data.success) {
-      alert('Регистрация прошла успешно!');
-      // Здесь можно добавить логику для перенаправления пользователя на страницу входа или другую страницу
+  const handleRegister = async () => {
+    if (!fullName.value || !login.value || !email.value || !password.value || !confirmPassword.value) {
+      alert('Пожалуйста, заполните все поля.')
+      return
     }
-  } catch (error) {
-    // Обработка ошибок
-    if (error.response) {
-      const { data } = error.response;
-      if (data.emailMessage === false) {
-        alert('Этот email уже используется.');
-      } else if (data.loginMessage === false) {
-        alert('Этот логин уже занят.');
-      } else {
-        alert('Произошла ошибка: ' + data.description);
+
+    if (password.value !== confirmPassword.value) {
+      alert('Пароли не совпадают.')
+      return
+    }
+
+    const [name, surname, patronymic] = fullName.value.split(' ')
+
+    try {
+      const response = await axios.post(import.meta.env.VITE_SERVER_API + '/signup', {
+        name,
+        surname,
+        patronymic,
+        login: login.value,
+        email: email.value,
+        branch: branch.value,
+        password: password.value,
+        confirmPassword: confirmPassword.value,
+      });
+
+      if (response.data.success) {
+        alert('Регистрация прошла успешно!');
       }
-    } else {
-      alert('Произошла ошибка: ' + error.message);
+    } catch (error) {
+      if (error.response) {
+        const { data } = error.response;
+        if (data.emailMessage === false) {
+          alert('Этот email уже используется.');
+        } else if (data.loginMessage === false) {
+          alert('Этот логин уже занят.');
+        } else {
+          alert('Произошла ошибка: ' + data.description);
+        }
+      } else {
+        alert('Произошла ошибка: ' + error.message);
+      }
     }
   }
-};
 </script>
 
 <template>
@@ -67,6 +66,7 @@ const handleRegister = async () => {
           <input v-model="fullName" type="text" placeholder="ФИО" required>
           <input v-model="login" type="text" placeholder="Логин" required>
           <input v-model="email" type="email" placeholder="Электронная почта" required>
+          <input v-model="branch" type="text" placeholder="Филиал" required>
           <input v-model="password" type="password" placeholder="Пароль" required>
           <input v-model="confirmPassword" type="password" placeholder="Повторите пароль" required>
           <div class="form_btn">
@@ -82,7 +82,6 @@ const handleRegister = async () => {
       </div>
     </div>
   </div>
-  <Footer />
 </template>
 
 <style scoped>
