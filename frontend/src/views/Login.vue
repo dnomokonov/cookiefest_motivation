@@ -13,13 +13,11 @@ const handleLogin = async () => {
       login: login.value,
       password: password.value
     });
-    // Если логин успешен
     if (response.data.success) {
       alert(`Добро пожаловать, ${response.data.nickname}!`);
       // Здесь можно добавить логику для перенаправления пользователя на другую страницу
     }
   } catch (error) {
-    // Обработка ошибок
     if (error.response) {
       const { data } = error.response;
       if (data.userMessage === false) {
@@ -62,13 +60,15 @@ const handleLogin = async () => {
               required
             />
           </div>
-          <Button 
-            titleButton="Войти" 
-            hoverColor="#8793A3"
-            activeColor="#5A6B7A" 
-            backgroundColor="#6E7F91" 
-            style="width: 180px; height: 40px;"
-          />
+          <div class="form_btn">
+            <Button 
+              titleButton="Войти" 
+              hoverColor="#8793A3"
+              activeColor="#5A6B7A" 
+              backgroundColor="#6E7F91" 
+              style="width: 150px; height: 40px;"
+            />
+          </div>
         </form>
         <p>
           Еще нет аккаунта?
@@ -76,7 +76,7 @@ const handleLogin = async () => {
         </p>
       </div>
       <div class="login_illustration">
-        <img src="@assets/people3.png" alt="people3" />
+        <img src="@assets/people3.png" alt="people3" width="680px" />
       </div>
     </div>
   </div>
@@ -85,24 +85,33 @@ const handleLogin = async () => {
 <style scoped>
   .login_block {
     width: 100%;
-    height: 80vh;
+    height: 90vh;
     display: flex;
     justify-content: center;
   }
 
   .content {
-    min-width: 1280px;
+    width: 100%;
+    max-width: 1280px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
   .login_form {
-    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login_form h1 {
+    font-size: 35px;
+    margin-bottom: 20px;
+  }
+
+  .login_form form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: center;
   }
 
   .form_group {
@@ -110,26 +119,36 @@ const handleLogin = async () => {
   }
 
   .form_group input {
-    width: 100%;
-    background: #f8f8f8;
-    border-radius: 8px;
+    width: 350px;
+    height: 30px;
+    font-size: 14px;
     border: none;
+    outline:none;
+    border-radius: 10px;
     padding: 10px;
-    font-size: 16px;
-    outline: none;
+    background-color: #E8E8E8;
   }
 
   .form_group input:focus {
     border: 1px solid #6e7f91;
   }
 
+  .form_btn {
+    display: flex;
+    justify-content: center;
+  }
+
   .login_form p {
     text-align: center;
     margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .login_form p a {
+    text-decoration: underline;
   }
 
   .login_illustration img {
-    width: 600px;
-    height: auto;
+    width: 680px;
   }
 </style>

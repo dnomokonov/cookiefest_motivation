@@ -59,112 +59,91 @@ const handleRegister = async () => {
 
 <template>
   <Header :isAuthenticated="false" backgroundColor="#EFECE7" />
-
   <div class="register_block">
     <div class="content">
       <div class="register_form">
         <h1>Регистрация</h1>
-        <p>Создайте свой аккаунт</p>
-
-        <input type="text" id="fullName" v-model="fullName" placeholder="ФИО" />
-        <input type="text" id="login" v-model="login" placeholder="Логин" />
-        <input type="email" id="email" v-model="email" placeholder="Электронная почта" />
-        <input type="password" id="password" v-model="password" placeholder="Пароль" />
-        <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Повторите пароль" />
-
-        <Button
-          titleButton="Зарегистрироваться"
-          style="width: 100%; max-width: 250px; height: 50px; background-color: #6E7F91; margin: 0 auto;"
-          @click="handleRegister"
-        />
-
-        <p style="margin: auto; padding:10px">
-          Уже есть аккаунт? Тогда
-          <a style="text-decoration: underline;" href="/auth/login">войдите</a>
+        <form @submit.prevent="handleRegister">
+          <input v-model="fullName" type="text" placeholder="ФИО" required>
+          <input v-model="login" type="text" placeholder="Логин" required>
+          <input v-model="email" type="email" placeholder="Электронная почта" required>
+          <input v-model="password" type="password" placeholder="Пароль" required>
+          <input v-model="confirmPassword" type="password" placeholder="Повторите пароль" required>
+          <div class="form_btn">
+            <Button backgroundColor="#6E7F91" hoverColor="#8793A3" activeColor="#5A6B7A" titleButton="Зарегистрироваться" style="padding: 12px;"/>
+          </div>
+        </form>
+        <p>Уже есть аккаунт? 
+          <a href="/auth/login">Тогда войдите</a>
         </p>
       </div>
-
-      <div class="register_preview">
-        <img src="@assets/people2.png" alt="register preview" />
+      <div class="register_image">
+        <img src="@assets/people2.png" alt="register preview">
       </div>
     </div>
   </div>
-
   <Footer />
 </template>
 
 <style scoped>
-.register_block {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #FFFFFF;
-}
+  .register_block {
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+  }
 
-.content {
-  width: 100%;
-  max-width: 1280px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
+  .register_block .content {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.register_form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 450px;
-  margin-bottom: 20px; 
-}
+  .register_form {
+    display: flex;
+    flex-direction: column;
+  }
 
-.register_form h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
+  .register_form h1 {
+    font-size: 35px;
+    margin-bottom: 20px;
+  }
 
-.register_form p {
-  font-size: 1rem;
-  color: #6E7F91;
-  margin-bottom: 20px;
-}
+  .register_form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
-input {
-  width: 100%;
-  height: 40px;
-  padding: 8px 12px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-  border: 0px solid #ccc;
-  border-radius: 10px; 
-  background-color: #E8E8E8; 
-  color: #000000;
-  font-family: 'Montserrat Alternates', sans-serif;
-}
+  .register_form form input {
+    width: 350px;
+    height: 30px;
+    font-size: 14px;
+    border: none;
+    outline:none;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #E8E8E8;
+  }
 
-input::placeholder {
-  color: #000000;
-  font-size: 1rem;
-}
+  .register_form form .form_btn {
+    display: flex;
+    justify-content: center;
+  }
 
-input:focus {
-  border-color: #6E7F91;
-}
+  .register_form p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
 
-.register_preview {
-  width: 100%;
-  max-width: 500px;
-  display: flex;
-  justify-content: center;
-}
+  .register_form p a {
+    text-decoration: underline;
+  }
 
-.register_preview img {
-  width: 170%;
-  max-width: 170%;
-  height: auto; 
-}
+  .register_image img {
+    width: 680px;
+  }
 </style>
