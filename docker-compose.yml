@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:17
     container_name: postgres-container
     restart: always
     environment:
@@ -14,3 +14,31 @@ services:
       - ./backup:/docker-entrypoint-initdb.d
     ports:
       - "5440:5432"
+
+  # Бэкенд Node.js
+  backend:
+    build:
+      context: ./backend
+    container_name: node-backend
+    restart: always
+    environment:
+      DATABASE_URL: "postgres://postgres:471979@db:5432/postgres"
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+  
+  # Фронтенд Vue.js
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vue-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  postgres-data:
+
