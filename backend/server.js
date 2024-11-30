@@ -6,9 +6,11 @@ const { body, validationResult } = require('express-validator');
 const cors = require('cors');
 require('express-async-errors');
 
+// Создаём экземпляр приложения express
 const app = express();
 const port = 3000;
 
+// Пул для соединения с БД
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
@@ -17,25 +19,31 @@ const pool = new Pool({
   port: 5432,
 });
 
+// Парсинг в формате JSON
 app.use(bodyparser.json());
 
+// CORS
 app.use(cors());
 
+// Проверка подключения к БД
 pool.connect()
   .then(client => {
-    console.log('connected to postgresql');
+    console.log('connected to postgreSQL');
     client.release();
   })
   .catch(err => {
-    console.error('connection to postgresql failed', err.stack);
+    console.error('connection to postgreSQL failed', err.stack);
     process.exit(1);
   });
 
+// Роут, который возращает строку "hello world!"
 app.get('/', (req, res) => {
   res.send('hello world!');
 });
 
+// Роут логин
 app.post('/login', [
+  // Валидация входных данных
   body('email').isEmail().withMessage('invalid email format'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long')
 ], async (req, res) => {
@@ -44,11 +52,15 @@ app.post('/login', [
     return res.status(400).json({ errors: errors.array() });
   }
 
+  // Извлекаем данные с запроса
   const { email, password } = req.body;
+
   try {
+    // Находим пользователя в БД с таким же email
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     const user = result.rows[0];
 
+    // Проверка, что пользователь существует
     if (!user) {
       return res.status(404).json({
         userMessage: false,
@@ -56,6 +68,7 @@ app.post('/login', [
       });
     }
 
+    // Проверка пароля
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
@@ -64,13 +77,16 @@ app.post('/login', [
       });
     }
 
+    // Если все данные верны, то возвращаем успешный ответ
     res.status(200).json({
       success: true,
       nickname: user.username,
       personLog: email,
       idTG: user.telegram_id,
     });
-  } catch (e) {
+  }
+  // Обработка ошибок
+  catch (e) {
     console.error(e);
     res.status(500).json({
       error: 'internal server error',
@@ -79,7 +95,9 @@ app.post('/login', [
   }
 });
 
+// Роут регистрации
 app.post('/signup', [
+  // Валидация данных
   body('name').notEmpty().withMessage('name is required'),
   body('surname').notEmpty().withMessage('surname is required'),
   body('patronymic').notEmpty().withMessage('patronymic is required'),
@@ -93,6 +111,7 @@ app.post('/signup', [
     return true;
   })
 ], async (req, res) => {
+  // Проверка ошибок валидации данных
   console.log('Received signup request:', req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -100,9 +119,11 @@ app.post('/signup', [
     return res.status(400).json({ errors: errors.array() });
   }
 
+  // Извлекаем данные пользователя
   const { name, surname, patronymic, username, email, password } = req.body;
 
   try {
+    // Проверка существования email
     console.log('Checking if email exists...');
     const emailResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (emailResult.rows.length > 0) {
@@ -113,6 +134,7 @@ app.post('/signup', [
       });
     }
 
+    // Проверка существования пользователя
     console.log('Checking if username exists...');
     const usernameResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     if (usernameResult.rows.length > 0) {
@@ -123,23 +145,27 @@ app.post('/signup', [
       });
     }
 
+    // Хэширование пароля
     console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Добавление пользователя в БД
     console.log('Inserting new user...');
     const result = await pool.query(
       'INSERT INTO users (name, surname, patronymic, username, email, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [name, surname, patronymic, username, email, hashedPassword]
     );
 
+    // Успешный ответ, если пользователь добавлен в БД
     console.log('User successfully registered:', result.rows[0]);
     res.status(201).json({
       success: true,
       message: 'user successfully registered',
       user: result.rows[0],
     });
-
-  } catch (e) {
+  }
+  // Обработка ошибок
+  catch (e) {
     console.error('Error in /signup route:', e);
     res.status(500).json({
       error: 'internal server error',
@@ -148,11 +174,15 @@ app.post('/signup', [
   }
 });
 
+// Роут вывода пользователей
 app.get('/users', async (req, res) => {
   try {
+    // Делаем запрос к БД
     const result = await pool.query('SELECT * FROM users');
+    // Обработка успешного запроса
     res.status(200).json(result.rows);
   } catch (e) {
+    // Обработка ошибок
     console.error(e);
     res.status(500).json({
       error: 'internal server error',
@@ -161,6 +191,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
+// Запускаем сервер
 app.listen(port, () => {
-  console.log(`start server on http://localhost:${port}`);
+  console.log(`Server started on http://localhost:${port}`);
 });
