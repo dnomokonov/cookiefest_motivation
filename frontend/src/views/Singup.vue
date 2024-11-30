@@ -2,27 +2,63 @@
 import Header from '@components/TheHeader.vue'
 import Footer from '@components/TheFooter.vue'
 import Button from '@components/BaseButton.vue'
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
-const fullName = ref('')
-const username = ref('')
-const email = ref('')
-const password = ref('')
-const repeatpassword = ref('')
+const fullName = ref('');
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
 
-const handleRegister = () => {
-  if (!fullName.value || !username.value || !email.value || !password.value || !repeatpassword.value) {
-    alert('Пожалуйста, заполните все поля.')
-    return
+const handleRegister = async () => {
+  if (!fullName.value || !username.value || !email.value || !password.value || !confirmPassword.value) {
+    alert('Пожалуйста, заполните все поля.');
+    return;
   }
-  console.log('Регистрация:', { fullName: fullName.value, username: username.value, email: email.value, password: password.value, repeatpassword: repeatpassword.value })
-}
+
+  if (password.value !== confirmPassword.value) {
+    alert('Пароли не совпадают.');
+    return;
+  }
+
+  const [name, surname, patronymic] = fullName.value.split(' ');
+
+  try {
+    const response = await axios.post('http://localhost:3000/signup', {
+      name,
+      surname,
+      patronymic,
+      username: username.value,
+      email: email.value,
+      password: password.value,
+      confirmPassword: confirmPassword.value,
+    });
+
+    if (response.data.success) {
+      alert('Регистрация прошла успешно!');
+      // Здесь можно добавить логику для перенаправления пользователя на страницу входа или другую страницу
+    }
+  } catch (error) {
+    // Обработка ошибок
+    if (error.response) {
+      const { data } = error.response;
+      if (data.emailMessage === false) {
+        alert('Этот email уже используется.');
+      } else if (data.usernameMessage === false) {
+        alert('Этот логин уже занят.');
+      } else {
+        alert('Произошла ошибка: ' + data.description);
+      }
+    } else {
+      alert('Произошла ошибка: ' + error.message);
+    }
+  }
+};
 </script>
 
 <template>
   <Header :isAuthenticated="false" backgroundColor="#EFECE7" />
-
- 
 
   <div class="register_block">
     <div class="content">
@@ -30,28 +66,22 @@ const handleRegister = () => {
         <h1>Регистрация</h1>
         <p>Создайте свой аккаунт</p>
 
-        <input  type="text" id="fullName" v-model="fullName" placeholder="ФИО" />
-
+        <input type="text" id="fullName" v-model="fullName" placeholder="ФИО" />
         <input type="text" id="username" v-model="username" placeholder="Логин" />
-
         <input type="email" id="email" v-model="email" placeholder="Электронная почта" />
-
         <input type="password" id="password" v-model="password" placeholder="Пароль" />
+        <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Повторите пароль" />
 
-        <input type="repeatpassword" id="repeatpassword" v-model="repeatpassword" placeholder="Повторите пароль" />
-
-        <Button 
+        <Button
           titleButton="Зарегистрироваться"
           style="width: 100%; max-width: 250px; height: 50px; background-color: #6E7F91; margin: 0 auto;"
           @click="handleRegister"
         />
 
         <p style="margin: auto; padding:10px">
-            Уже есть аккаунт? Тогда
-            <a style="text-decoration: underline;" href="/auth/login">войдите</a>
+          Уже есть аккаунт? Тогда
+          <a style="text-decoration: underline;" href="/auth/login">войдите</a>
         </p>
-
-        
       </div>
 
       <div class="register_preview">
@@ -60,11 +90,10 @@ const handleRegister = () => {
     </div>
   </div>
 
-  <Footer/>
+  <Footer />
 </template>
 
 <style scoped>
-
 .register_block {
   width: 100%;
   min-height: 100vh;
@@ -83,7 +112,6 @@ const handleRegister = () => {
   align-items: center;
   flex-wrap: wrap;
 }
-
 
 .register_form {
   display: flex;
@@ -139,5 +167,4 @@ input:focus {
   max-width: 170%;
   height: auto; 
 }
-
 </style>
