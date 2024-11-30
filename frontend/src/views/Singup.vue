@@ -4,11 +4,12 @@
   import Header from '@components/TheHeader.vue'
   import Button from '@components/BaseButton.vue'
   
-  const fullName = ref('');
-  const username = ref('');
-  const email = ref('');
+  const fullName = ref('')
+  const username = ref('')
+  const email = ref('')
+  const branch = ref('')
   const password = ref('');
-  const confirmPassword = ref('');
+  const confirmPassword = ref('')
   const errorMessage = ref('')
   const isLoading = ref(false)
 
@@ -27,6 +28,7 @@
             fullName: fullName.value,
             username: username.value,
             email: email.value,
+            branch: branch.value,
             password: password.value,
           })
 
@@ -59,6 +61,7 @@
           <input v-model="fullName" type="text" placeholder="ФИО" required>
           <input v-model="username" type="text" placeholder="Логин" required>
           <input v-model="email" type="email" placeholder="Почта" required>
+          <input v-model="branch" type="text" placeholder="Филиал" required>
           <input v-model="password" type="password" placeholder="Пароль" required>
           <input v-model="confirmPassword" type="password" placeholder="Повторите пароль" required>
           <div class="form_btn">
