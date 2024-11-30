@@ -1,127 +1,131 @@
 <script setup>
-import Header from '@components/TheHeader.vue'
-import Button from '@components/BaseButton.vue'
+    import { ref } from 'vue'
+    import axios from 'axios'
+    import Header from '@components/TheHeader.vue'
+    import Button from '@components/BaseButton.vue'
+
+    const username = ref('')
+    const password = ref('')
+    const errorMessage = ref('')
+    const isLoading = ref(false)
+
+    const handleLogin = async() => {
+        errorMessage.value = ''
+        isLoading.value = true
+
+        try {
+            console.log(username.value, password.value)
+
+            const response = await axios.post(import.meta.env.VITE_SERVER_API + '/login', {
+                username: username.value,
+                password: password.value
+            })
+
+            console.log('Успешный вход:', response.data)
+            window.location.href = '/rating'
+
+        } catch(error) {
+            if (error.response && error.response.data) {
+                errorMessage.value = error.response.data.message || 'Ошибка авторизации.'
+            } else {
+                errorMessage.value = 'Произошла ошибка. Попробуйте снова позже.'
+            }
+
+            alert(errorMessage.value)
+
+            console.error(error)
+        } finally {
+            isLoading.value = false
+        }
+    }
+
 </script>
 
 <template>
     <Header :isAuthenticated="false" backgroundColor="#EFECE7"/>
 
     <div class="login_block">
-        <div class="content">
-        <div class="login_form">
-            <h1>Войти</h1>
-            <form @submit.prevent="handleLogin">
-            <div class="form_group">
-                <input
-                id="login"
-                type="text"
-                placeholder="Логин"
-                required
-                />
+    <div class="content">
+      <div class="login_from">
+        <h1>Войти</h1>
+        <form @submit.prevent="handleLogin">
+            <input v-model="username" type="text" placeholder="Логин" required>
+            <input v-model="password" type="password" placeholder="Пароль" required>
+            <div class="form_btn">
+                <Button backgroundColor="#6E7F91" hoverColor="#8793A3" activeColor="#5A6B7A" titleButton="Войти" style="width: 150px; height: 40px;"/>
             </div>
-            <div class="form_group">
-                <input
-                id="password"
-                type="password"
-                placeholder="Пароль"
-                required
-                />
-            </div>
-            <Button 
-                titleButton="Войти" 
-                hoverColor="#8793A3"
-                activeColor="#5A6B7A" 
-                backgroundColor="#6E7F91" 
-                style="width: 180px; height: 40px;"
-            />
-            </form>
-            <p>
-                Еще нет аккаунта?
-                <a href="/auth/singup">Зарегистрироваться</a>
-            </p>
-        </div>
-        <div class="login_illustration">
-            <img src="@assets/people3.png" alt="people3" />
-        </div>
-        </div>
+        </form>
+        <p>Еще нет аккаунта?
+            <a href="/auth/singup">Зарегистроваться</a>
+        </p>
+      </div>
+      <div class="login_image">
+        <img src="@assets/people3.png" alt="people3" width="80px">
+      </div>
     </div>
-
-    
+  </div>
 
 </template>
 
 <style scoped>
     .login_block {
-        width: 100%;
-        height: 80vh;
-        display: flex;
-        justify-content: center;
-    }
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+  }
 
-    .content {
-        min-width: 1280px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+  .login_block .content {
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .login_form {
-        max-width: 350px;
-        display: flex;
-        flex-direction: column;
+  .login_from {
+    display: flex;
+    flex-direction: column;
+  }
 
-    }
+  .login_from h1 {
+    font-size: 35px;
+    margin-bottom: 20px;
+  }
 
-    .login_form h1 {
-        font-size: 3rem;
-        margin-bottom: 20px;
-        font-weight: bold;
-    }
+  .login_from form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-    .login_form button {
-        align-items: center;
-    }
+  .login_from form input {
+    width: 350px;
+    height: 30px;
+    font-size: 14px;
+    border: none;
+    outline:none;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #E8E8E8;
+  }
 
-    .form_group {
-        margin-bottom: 20px;
-    }
+  .login_from form .form_btn {
+    display: flex;
+    justify-content: center;
+  }
 
+  .login_from p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
 
-    input {
-        width: 100%;
-        height: 40px;
-        padding: 8px 12px;
-        font-size: 1rem;
-        border: 0px solid #ccc;
-        border-radius: 10px; 
-        background-color: #E8E8E8; 
-        color: #000000;
-        font-family: 'Montserrat Alternates', sans-serif;
-    }
+  .login_from p a {
+    text-decoration: underline;
+  }
 
-    input:focus {
-        border-color: #6c757d;
-        outline: none;
-    }
-
-    input::placeholder{
-        color: #000000;
-    }
-
-    p {
-        margin-top: 20px;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    p a {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-
-
-    .login_illustration img {
-        width: 550px;
-    }
+  .login_image img {
+    width: 680px;
+  }
 </style>
