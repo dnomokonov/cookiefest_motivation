@@ -4,13 +4,13 @@ import Button from '@components/BaseButton.vue'
 import { ref } from 'vue';
 import axios from 'axios';
 
-const username = ref('');
+const login = ref('');
 const password = ref('');
 
 const handleLogin = async () => {
   try {
     const response = await axios.post('http://localhost:3000/login', {
-      username: username.value,
+      login: login.value,
       password: password.value
     });
     // Если логин успешен
@@ -47,7 +47,7 @@ const handleLogin = async () => {
           <div class="form_group">
             <input
               id="login"
-              v-model="username"
+              v-model="login"
               type="text"
               placeholder="Логин"
               required

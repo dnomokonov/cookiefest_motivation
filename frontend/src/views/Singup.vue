@@ -6,13 +6,13 @@ import { ref } from 'vue';
 import axios from 'axios';
 
 const fullName = ref('');
-const username = ref('');
+const login = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
 const handleRegister = async () => {
-  if (!fullName.value || !username.value || !email.value || !password.value || !confirmPassword.value) {
+  if (!fullName.value || !login.value || !email.value || !password.value || !confirmPassword.value) {
     alert('Пожалуйста, заполните все поля.');
     return;
   }
@@ -29,7 +29,7 @@ const handleRegister = async () => {
       name,
       surname,
       patronymic,
-      username: username.value,
+      login: login.value,
       email: email.value,
       password: password.value,
       confirmPassword: confirmPassword.value,
@@ -45,7 +45,7 @@ const handleRegister = async () => {
       const { data } = error.response;
       if (data.emailMessage === false) {
         alert('Этот email уже используется.');
-      } else if (data.usernameMessage === false) {
+      } else if (data.loginMessage === false) {
         alert('Этот логин уже занят.');
       } else {
         alert('Произошла ошибка: ' + data.description);
@@ -67,7 +67,7 @@ const handleRegister = async () => {
         <p>Создайте свой аккаунт</p>
 
         <input type="text" id="fullName" v-model="fullName" placeholder="ФИО" />
-        <input type="text" id="username" v-model="username" placeholder="Логин" />
+        <input type="text" id="login" v-model="login" placeholder="Логин" />
         <input type="email" id="email" v-model="email" placeholder="Электронная почта" />
         <input type="password" id="password" v-model="password" placeholder="Пароль" />
         <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Повторите пароль" />

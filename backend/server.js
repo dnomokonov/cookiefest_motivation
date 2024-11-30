@@ -14,7 +14,7 @@ const port = 3000;
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'postgres',
+  database: 'Cookie-Fest',
   password: '471979',
   port: 5432,
 });
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 // Роут логин
 app.post('/login', [
   // Валидация входных данных
-  body('username').notEmpty().withMessage('username is required'),
+  body('login').notEmpty().withMessage('login is required'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long')
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -53,11 +53,11 @@ app.post('/login', [
   }
 
   // Извлекаем данные с запроса
-  const { username, password } = req.body;
+  const { login, password } = req.body;
 
   try {
-    // Находим пользователя в БД с таким же username
-    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    // Находим пользователя в БД с таким же login
+    const result = await pool.query('SELECT * FROM users WHERE login = $1', [login]);
     const user = result.rows[0];
 
     // Проверка, что пользователь существует
@@ -80,8 +80,8 @@ app.post('/login', [
     // Если все данные верны, то возвращаем успешный ответ
     res.status(200).json({
       success: true,
-      nickname: user.username,
-      personLog: username,
+      nickname: user.login,
+      personLog: login,
       idTG: user.telegram_id,
     });
   }
@@ -101,7 +101,7 @@ app.post('/signup', [
   body('name').notEmpty().withMessage('name is required'),
   body('surname').notEmpty().withMessage('surname is required'),
   body('patronymic').notEmpty().withMessage('patronymic is required'),
-  body('username').notEmpty().withMessage('username is required'),
+  body('login').notEmpty().withMessage('login is required'),
   body('email').isEmail().withMessage('invalid email format'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
   body('confirmPassword').custom((value, { req }) => {
@@ -120,7 +120,7 @@ app.post('/signup', [
   }
 
   // Извлекаем данные пользователя
-  const { name, surname, patronymic, username, email, password } = req.body;
+  const { name, surname, patronymic, login, email, password } = req.body;
 
   try {
     // Проверка существования email
@@ -135,13 +135,13 @@ app.post('/signup', [
     }
 
     // Проверка существования пользователя
-    console.log('Checking if username exists...');
-    const usernameResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-    if (usernameResult.rows.length > 0) {
-      console.log('Username is already taken');
+    console.log('Checking if login exists...');
+    const loginResult = await pool.query('SELECT * FROM users WHERE login = $1', [login]);
+    if (loginResult.rows.length > 0) {
+      console.log('login is already taken');
       return res.status(400).json({
-        usernameMessage: false,
-        description: 'username is already taken',
+        loginMessage: false,
+        description: 'login is already taken',
       });
     }
 
@@ -152,15 +152,15 @@ app.post('/signup', [
     // Добавление пользователя в БД
     console.log('Inserting new user...');
     const result = await pool.query(
-      'INSERT INTO users (name, surname, patronymic, username, email, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, surname, patronymic, username, email, hashedPassword]
+      'INSERT INTO users (name, surname, patronymic, login, email, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, surname, patronymic, login, email, hashedPassword]
     );
 
     // Возвращаем успешный ответ
     console.log('User successfully created:', result.rows[0]);
     res.status(201).json({
       success: true,
-      nickname: result.rows[0].username,
+      nickname: result.rows[0].login,
     });
   } catch (e) {
     console.error('Error during signup:', e);
