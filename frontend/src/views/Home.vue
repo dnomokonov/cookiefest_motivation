@@ -13,7 +13,7 @@
                 <h1>balance</h1>
                 <h3>Современная система мотивации</h3>
                 <p>Платформа, которая позволяет сотрудникам в режиме онлайн видеть результаты своего труда и заработанные показатели. </p>
-                <Button/>
+                <Button titleButton="Приступить" style="width: 180px; height: 50px;"/>
             </div>
             <div class="welcome_preview">
                 <img src="@assets/welcomeblock.png" alt="welcomeblock">
