@@ -43,8 +43,7 @@ app.get('/', (req, res) => {
 
 // Роут логин
 app.post('/login', [
-  // Валидация входных данных
-  body('email').isEmail().withMessage('invalid email format'),
+  body('username').notEmpty().withMessage('username is required'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long')
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -53,11 +52,11 @@ app.post('/login', [
   }
 
   // Извлекаем данные с запроса
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    // Находим пользователя в БД с таким же email
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    // Находим пользователя в БД с таким же username
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
     // Проверка, что пользователь существует
@@ -81,7 +80,7 @@ app.post('/login', [
     res.status(200).json({
       success: true,
       nickname: user.username,
-      personLog: email,
+      personLog: username,
       idTG: user.telegram_id,
     });
   }
@@ -156,34 +155,14 @@ app.post('/signup', [
       [name, surname, patronymic, username, email, hashedPassword]
     );
 
-    // Успешный ответ, если пользователь добавлен в БД
-    console.log('User successfully registered:', result.rows[0]);
+    // Возвращаем успешный ответ
+    console.log('User successfully created:', result.rows[0]);
     res.status(201).json({
       success: true,
-      message: 'user successfully registered',
-      user: result.rows[0],
+      nickname: result.rows[0].username,
     });
-  }
-  // Обработка ошибок
-  catch (e) {
-    console.error('Error in /signup route:', e);
-    res.status(500).json({
-      error: 'internal server error',
-      description: e.message,
-    });
-  }
-});
-
-// Роут вывода пользователей
-app.get('/users', async (req, res) => {
-  try {
-    // Делаем запрос к БД
-    const result = await pool.query('SELECT * FROM users');
-    // Обработка успешного запроса
-    res.status(200).json(result.rows);
   } catch (e) {
-    // Обработка ошибок
-    console.error(e);
+    console.error('Error during signup:', e);
     res.status(500).json({
       error: 'internal server error',
       description: e.message,
@@ -193,5 +172,5 @@ app.get('/users', async (req, res) => {
 
 // Запускаем сервер
 app.listen(port, () => {
-  console.log(`Server started on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });
