@@ -4,7 +4,7 @@
     import Header from '@components/TheHeader.vue'
     import Button from '@components/BaseButton.vue'
 
-    const username = ref('')
+    const login = ref('')
     const password = ref('')
     const errorMessage = ref('')
     const isLoading = ref(false)
@@ -14,10 +14,10 @@
         isLoading.value = true
 
         try {
-            console.log(username.value, password.value)
+            console.log(login.value, password.value)
 
             const response = await axios.post(import.meta.env.VITE_SERVER_API + '/login', {
-                username: username.value,
+                login: login.value,
                 password: password.value
             })
 
@@ -49,7 +49,7 @@
       <div class="login_from">
         <h1>Войти</h1>
         <form @submit.prevent="handleLogin">
-            <input v-model="username" type="text" placeholder="Логин" required>
+            <input v-model="login" type="text" placeholder="Логин" required>
             <input v-model="password" type="password" placeholder="Пароль" required>
             <div class="form_btn">
                 <Button backgroundColor="#6E7F91" hoverColor="#8793A3" activeColor="#5A6B7A" titleButton="Войти" style="width: 150px; height: 40px;"/>

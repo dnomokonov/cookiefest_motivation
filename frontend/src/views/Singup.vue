@@ -22,22 +22,27 @@
       return
     }
 
-    const [name, surname, patronymic] = fullName.value.split(' ')
+    // Разделение fullName на фамилию, имя и отчество
+    const [surname, name, patronymic] = fullName.value.split(' ');
+
+    // Если отчество не указано, ставим пустую строку
+    const userData = {
+      name: name || '',
+      surname: surname || '',
+      patronymic: patronymic || '',  // Если отчество отсутствует, отправляем пустую строку
+      login: login.value,
+      email: email.value,
+      branch: branch.value,
+      password: password.value,
+      confirmPassword: confirmPassword.value,
+    };
 
     try {
-      const response = await axios.post(import.meta.env.VITE_SERVER_API + '/signup', {
-        name,
-        surname,
-        patronymic,
-        login: login.value,
-        email: email.value,
-        branch: branch.value,
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-      });
+      const response = await axios.post(import.meta.env.VITE_SERVER_API + '/signup', userData);
 
       if (response.data.success) {
         alert('Регистрация прошла успешно!');
+        window.location.href = '/auth/login'
       }
     } catch (error) {
       if (error.response) {
