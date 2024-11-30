@@ -1,15 +1,15 @@
 const express = require('express');
 const bodyparser = require('body-parser');
-const { pool } = require('pg');
+const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
-const { body, validationresult } = require('express-validator');
-const emailexistence = require('email-existence'); // используем email-existence для проверки email
+const { body, validationResult } = require('express-validator');
+const cors = require('cors');
 require('express-async-errors');
 
 const app = express();
 const port = 3000;
 
-const pool = new pool({
+const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'postgres',
@@ -18,6 +18,8 @@ const pool = new pool({
 });
 
 app.use(bodyparser.json());
+
+app.use(cors());
 
 pool.connect()
   .then(client => {
@@ -34,30 +36,30 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', [
-  body('email').isemail().withmessage('invalid email format'),
-  body('password').islength({ min: 6 }).withmessage('password must be at least 6 characters long')
+  body('email').isEmail().withMessage('invalid email format'),
+  body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long')
 ], async (req, res) => {
-  const errors = validationresult(req);
-  if (!errors.isempty()) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { email, password } = req.body;
   try {
-    const result = await pool.query('select * from users where email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     const user = result.rows[0];
 
     if (!user) {
       return res.status(404).json({
-        usermessage: false,
+        userMessage: false,
         description: 'user not found',
       });
     }
 
-    const ismatch = await bcrypt.compare(password, user.password);
-    if (!ismatch) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({
-        passmessage: false,
+        passMessage: false,
         description: 'incorrect password',
       });
     }
@@ -65,8 +67,8 @@ app.post('/login', [
     res.status(200).json({
       success: true,
       nickname: user.username,
-      personlog: email,
-      idtg: user.telegram_id,
+      personLog: email,
+      idTG: user.telegram_id,
     });
   } catch (e) {
     console.error(e);
@@ -78,70 +80,67 @@ app.post('/login', [
 });
 
 app.post('/signup', [
-  body('name').notempty().withmessage('name is required'),
-  body('surname').notempty().withmessage('surname is required'),
-  body('patronymic').notempty().withmessage('patronymic is required'),
-  body('username').notempty().withmessage('username is required'),
-  body('email').isemail().withmessage('invalid email format'),
-  body('password').islength({ min: 6 }).withmessage('password must be at least 6 characters long'),
-  body('confirmpassword').custom((value, { req }) => {
+  body('name').notEmpty().withMessage('name is required'),
+  body('surname').notEmpty().withMessage('surname is required'),
+  body('patronymic').notEmpty().withMessage('patronymic is required'),
+  body('username').notEmpty().withMessage('username is required'),
+  body('email').isEmail().withMessage('invalid email format'),
+  body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
+  body('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.password) {
-      throw new error('passwords do not match');
+      throw new Error('passwords do not match');
     }
     return true;
   })
 ], async (req, res) => {
-  const errors = validationresult(req);
-  if (!errors.isempty()) {
+  console.log('Received signup request:', req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('Validation errors:', errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 
   const { name, surname, patronymic, username, email, password } = req.body;
 
   try {
-    // проверка, существует ли email
-    emailexistence.check(email, async (error, response) => {
-      if (error || !response) {
-        return res.status(400).json({
-          emailmessage: false,
-          description: 'email address is not valid or doesn’t exist',
-        });
-      }
-
-      // проверяем, занят ли email в базе данных
-      const emailresult = await pool.query('select * from users where email = $1', [email]);
-      if (emailresult.rows.length > 0) {
-        return res.status(400).json({
-          emailmessage: false,
-          description: 'email is already in use',
-        });
-      }
-
-      // проверяем, занят ли username
-      const usernameresult = await pool.query('select * from users where username = $1', [username]);
-      if (usernameresult.rows.length > 0) {
-        return res.status(400).json({
-          usernamemessage: false,
-          description: 'username is already taken',
-        });
-      }
-
-      const hashedpassword = await bcrypt.hash(password, 10);
-
-      const result = await pool.query(
-        'insert into users (name, surname, patronymic, username, email, password) values ($1, $2, $3, $4, $5, $6) returning *',
-        [name, surname, patronymic, username, email, hashedpassword]
-      );
-
-      res.status(201).json({
-        success: true,
-        message: 'user successfully registered',
-        user: result.rows[0],
+    console.log('Checking if email exists...');
+    const emailResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (emailResult.rows.length > 0) {
+      console.log('Email is already in use');
+      return res.status(400).json({
+        emailMessage: false,
+        description: 'email is already in use',
       });
+    }
+
+    console.log('Checking if username exists...');
+    const usernameResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    if (usernameResult.rows.length > 0) {
+      console.log('Username is already taken');
+      return res.status(400).json({
+        usernameMessage: false,
+        description: 'username is already taken',
+      });
+    }
+
+    console.log('Hashing password...');
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    console.log('Inserting new user...');
+    const result = await pool.query(
+      'INSERT INTO users (name, surname, patronymic, username, email, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, surname, patronymic, username, email, hashedPassword]
+    );
+
+    console.log('User successfully registered:', result.rows[0]);
+    res.status(201).json({
+      success: true,
+      message: 'user successfully registered',
+      user: result.rows[0],
     });
 
   } catch (e) {
-    console.error(e);
+    console.error('Error in /signup route:', e);
     res.status(500).json({
       error: 'internal server error',
       description: e.message,
@@ -151,7 +150,7 @@ app.post('/signup', [
 
 app.get('/users', async (req, res) => {
   try {
-    const result = await pool.query('select * from users');
+    const result = await pool.query('SELECT * FROM users');
     res.status(200).json(result.rows);
   } catch (e) {
     console.error(e);
