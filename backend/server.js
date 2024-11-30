@@ -11,12 +11,16 @@ const app = express();
 const port = 3000;
 
 // Пул для соединения с БД
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'postgres',
+//   password: '471979',
+//   port: 5432,
+// });
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'postgres',
-  password: '471979',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:471979@db:5432/postgres'
 });
 
 // Парсинг в формате JSON

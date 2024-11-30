@@ -13,7 +13,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./backup:/docker-entrypoint-initdb.d
     ports:
-      - "5440:5432"
+      - "5432:5432"
 
   # Бэкенд Node.js
   backend:
