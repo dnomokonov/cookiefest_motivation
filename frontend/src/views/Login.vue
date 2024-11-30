@@ -27,7 +27,13 @@ import Button from '@components/BaseButton.vue'
                 required
                 />
             </div>
-            <Button titleButton="Войти" style="width: 180px; height: 40px; background-color: #6E7F91;"/>
+            <Button 
+                titleButton="Войти" 
+                hoverColor="#8793A3"
+                activeColor="#5A6B7A" 
+                backgroundColor="#6E7F91" 
+                style="width: 180px; height: 40px;"
+            />
             </form>
             <p>
                 Еще нет аккаунта?
@@ -39,6 +45,8 @@ import Button from '@components/BaseButton.vue'
         </div>
         </div>
     </div>
+
+    
 
 </template>
 
