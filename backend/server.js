@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
 
 // Роут логин
 app.post('/login', [
+  // Валидация входных данных
   body('username').notEmpty().withMessage('username is required'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long')
 ], async (req, res) => {
