@@ -30,6 +30,10 @@
         return window.location.pathname === '/'
     })
 
+    const logoutAction = () => {
+        document.location.href = '/'
+    }
+
 </script>
 
 <template>
@@ -41,17 +45,17 @@
             <nav class="menu">
                 <ul>
                     <li>
-                        <a v-if="isAuthenticated" href="/rating">Рейтинг</a>
+                        <a v-if="isAuthenticated" href="/rating" :style="{ color: changeColor }">Рейтинг</a>
                     </li>
                     <li>
-                        <a v-if="isAuthenticated" href="/profile">Профиль</a>
+                        <a v-if="isAuthenticated" href="/profile" :style="{ color: changeColor }">Профиль</a>
                     </li>
                 </ul>
             </nav>
             <a href="#" class="auth-link" :style="{ color: changeColor }" @click.prevent="handleAuthAction(isAuthenticated)">
                 <template v-if="isAuthenticated">
                     <a href="/">
-                        <img src="@assets/icon_logout.svg" alt="logout">
+                        <img src="@assets/icon_logout.svg" alt="logout" @click="logoutAction">
                     </a>
                 </template>
                 <template v-else>
