@@ -11,22 +11,22 @@
                 <p>Современная система мотивации</p>
                 <ul>
                     <li>
-                        <a href="">
+                        <a href="https://web.telegram.org/a/">
                             <img src="@assets/icon_telegram.svg" alt="telegram">
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="https://vk.com/">
                             <img src="@assets/icon_vk.svg" alt="vk">
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="https://rkn.gov.ru/">
                             <img src="@assets/icon_instagram.svg" alt="instagram">
                         </a>
                     </li>
                     <li>
-                        <a href="">
+                        <a href="https://www.youtube.com/">
                             <img src="@assets/icon_youTube.svg" alt="youTube">
                         </a>
                     </li>
