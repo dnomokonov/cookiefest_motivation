@@ -11,12 +11,16 @@ const app = express();
 const port = 3000;
 
 // Пул для соединения с БД
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'postgres',
+//   password: '471979',
+//   port: 5432,
+// });
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Cookie-Fest',
-  password: '471979',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:471979@db:5432/postgres'
 });
 
 // Парсинг в формате JSON
@@ -172,6 +176,10 @@ app.post('/signup', [
 });
 
 // Запускаем сервер
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
+
+app.listen(3000, '0.0.0.0', () => {
+  console.log('Server is running on port 3000');
 });
