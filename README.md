@@ -11,4 +11,4 @@ Employee motivation system for the Novosibirsk hackathon Cookie Fest
 `docker-compose dowm`
 
 P.S
-Если авторизация будет не работать, то переходите сразу по `/rateing` или `/profile`
+Если авторизация будет не работать, то переходите сразу по `/rating` или `/profile`
