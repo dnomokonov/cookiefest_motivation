@@ -11,16 +11,12 @@ const app = express();
 const port = 3000;
 
 // Пул для соединения с БД
-// const pool = new Pool({
-//   user: 'postgres',
-//   host: 'localhost',
-//   database: 'postgres',
-//   password: '471979',
-//   port: 5432,
-// });
-
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:471979@db:5432/postgres'
+  user: 'postgres',
+  host: 'localhost',
+  database: 'Cookie-Fest',
+  password: '471979',
+  port: 5432,
 });
 
 // Парсинг в формате JSON
@@ -102,9 +98,9 @@ app.post('/login', [
 // Роут регистрации
 app.post('/signup', [
   // Валидация данных
-  body('name').notEmpty().withMessage('name is required'),
-  body('surname').notEmpty().withMessage('surname is required'),
-  body('patronymic').notEmpty().withMessage('patronymic is required'),
+  body('name').optional().notEmpty().withMessage('name is required'),
+  body('surname').optional().notEmpty().withMessage('surname is required'),
+  body('patronymic').optional().notEmpty().withMessage('patronymic is required'),
   body('login').notEmpty().withMessage('login is required'),
   body('email').isEmail().withMessage('invalid email format'),
   body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters long'),
@@ -124,7 +120,7 @@ app.post('/signup', [
   }
 
   // Извлекаем данные пользователя
-  const { name, surname, patronymic, login, email, password } = req.body;
+  const { name, surname, patronymic, login, email, password, branch } = req.body;
 
   try {
     // Проверка существования email
@@ -153,11 +149,11 @@ app.post('/signup', [
     console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Добавление пользователя в БД
-    console.log('Inserting new user...');
+    // Добавление пользователя в БД с полем branch
+    console.log('Inserting new user with branch:', { name, surname, patronymic, login, email, branch, password: hashedPassword });
     const result = await pool.query(
-      'INSERT INTO users (name, surname, patronymic, login, email, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, surname, patronymic, login, email, hashedPassword]
+      'INSERT INTO users (name, surname, patronymic, login, email, branch, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [name, surname, patronymic, login, email, branch, hashedPassword]
     );
 
     // Возвращаем успешный ответ
@@ -176,10 +172,6 @@ app.post('/signup', [
 });
 
 // Запускаем сервер
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}`);
-// });
-
-app.listen(3000, '0.0.0.0', () => {
-  console.log('Server is running on port 3000');
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on port ${port}`);
 });
