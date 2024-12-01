@@ -3,7 +3,7 @@
     import Header from '@components/TheHeader.vue'
     import TableOperation from '@components/BaseList.vue'
 
-    const myRate = 0;
+    const myRate = 1;
 
     const categories = ref([
         { id: 'overall', name: 'Общий рейтинг' },
@@ -15,27 +15,47 @@
 
     const columnHeaders = [
         { label: '№', key: 'id' },
-        { label: 'Название', key: 'name' },
+        { label: 'Пользователей', key: 'name' },
         { label: 'Контрагент', key: 'сontractor' },
-        { label: 'Стоимость ₽', key: 'value' },
         { label: 'Заработок ₽', key: 'profit' },
-    ]
+    ];
 
-    const operations = [
-        { id: 1, name: 'Операция 1', сontractor: 'ООО Михаил', value: 5, profit: 1500 },
-        { id: 2, name: 'Операция 2', сontractor: 'ООО Михаил', value: 2, profit: 800 },
-        { id: 3, name: 'Операция 3', сontractor: 'ООО Михаил', value: 1, profit: 200 },
-    ]
+    const operationsData = {
+        overall: [
+            { id: 1, name: 'User1', сontractor: 'ООО Михаил', value: 5, profit: 150000 },
+            { id: 2, name: 'User2', сontractor: 'ООО Михаил', value: 2, profit: 80000 },
+            { id: 3, name: 'User3', сontractor: 'ООО Михаил', value: 1, profit: 29000 },
+            { id: 4, name: 'User4', сontractor: 'ООО Михаил', value: 1, profit: 25000 },
+            { id: 5, name: 'User5', сontractor: 'ООО Михаил', value: 1, profit: 20010 },
+            { id: 6, name: 'User6', сontractor: 'ООО Михаил', value: 1, profit: 12300 },
+        ],
+        branch: [
+            { id: 1, name: 'Операция A', сontractor: 'ООО Иванов', value: 10, profit: 3000 },
+            { id: 2, name: 'Операция B', сontractor: 'ООО Петров', value: 7, profit: 1200 },
+        ],
+        branches: [
+            { id: 1, name: 'Филиал 1', сontractor: 'ООО Москва', value: 50, profit: 10000 },
+            { id: 2, name: 'Филиал 2', сontractor: 'ООО Санкт-Петербург', value: 40, profit: 8000 },
+        ],
+        topSales: [
+            { id: 1, name: 'Продажа X', сontractor: 'ООО Успех', value: 15, profit: 5000 },
+            { id: 2, name: 'Продажа Y', сontractor: 'ООО Удача', value: 12, profit: 4500 },
+        ],
+        topProfit: [
+            { id: 1, name: 'Заработок Q', сontractor: 'ООО Профит', value: 5, profit: 8000 },
+            { id: 2, name: 'Заработок R', сontractor: 'ООО Резерв', value: 3, profit: 7000 },
+        ],
+    };
 
-    const selectedCategory = ref('overall')
+    const selectedCategory = ref('overall');
 
-    const currentHeaders = computed(() => {
-        return categories.value.find(category => category.id === selectedCategory.value)?.headers || []
-    })
+    const currentOperations = computed(() => {
+        return operationsData[selectedCategory.value] || [];
+    });
 
     const selectCategory = (categoryId) => {
-        selectedCategory.value = categoryId
-    }
+        selectedCategory.value = categoryId;
+    };
 </script>
 
 <template>
@@ -70,13 +90,12 @@
             <div class="lower_block">
                 <div class="block_list_users">
                     <div class="table-wrapper">
-                        <TableOperation :columnHeaders="columnHeaders" :tableData="operations" />
+                        <TableOperation :columnHeaders="columnHeaders" :tableData="currentOperations" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <style scoped>

@@ -3,8 +3,34 @@
     import Card from '@components/Card.vue'
     import TableOperation from '@components/BaseList.vue'
 
-    const username = 'Name Surname'
+    const username = 'Михаил Мрих'
     const userbranch = 'sibgutis'
+    
+    const tableHeaders = [
+        { key: 'id', label: '№1' },
+        { key: 'name', label: 'Название' },
+        { key: 'partner', label: 'Контрагент' },
+        { key: 'cost', label: 'Стоимость (₽)' },
+        { key: 'profit', label: 'Заработок (₽)' }
+    ]
+
+    const tableData = [
+        { id: 1, name: 'Товар A', partner: 'ООО Рога и Копыта', cost: 5000, profit: 1200 },
+        { id: 2, name: 'Товар B', partner: 'ИП Иванов', cost: 7000, profit: 1500 },
+        { id: 3, name: 'Товар C', partner: 'ЗАО Пример', cost: 9000, profit: 1800 },
+        { id: 4, name: 'Товар 21', partner: 'ООО Удача', cost: 12000, profit: 2100 },
+        { id: 5, name: 'Товар М', partner: 'ООО Удача', cost: 12000, profit: 2100 },
+        { id: 6, name: 'Товар Ф', partner: 'ООО Удача', cost: 12000, profit: 7100 },
+        { id: 7, name: 'Товар Ы', partner: 'ООО Удача', cost: 13000, profit: 4100 },
+        { id: 8, name: 'Товар D', partner: 'ООО Удача', cost: 15000, profit: 23100 },
+        { id: 9, name: 'Товар 13', partner: 'ООО Удача', cost: 142000, profit: 4100 },
+        { id: 10, name: 'Товар 42', partner: 'ООО Удача', cost: 11000, profit: 8100 },
+        { id: 11, name: 'Товар ВЫФ', partner: 'ООО Удача', cost: 12000, profit: 1100 },
+        { id: 12, name: 'Товар 23', partner: 'ООО Удача', cost: 12000, profit: 5100 },
+    ]
+
+    const totalTransactions = tableData.length
+    const totalEarnings = tableData.reduce((sum, t) => sum + t.profit, 0)
 
 </script>
 
@@ -19,14 +45,14 @@
                     <p class="userbranch">{{ userbranch }}</p>
                 </div>
                 <div class="cards">
-                    <Card typeIconData="rub"/>
-                    <Card titleCard="Количество продаж" typeIconData="box"/>
+                    <Card typeIconData="rub" titleCard="Заработано" :dataCard="totalEarnings"/>
+                    <Card titleCard="Количество продаж" :dataCard="totalTransactions" typeIconData="box"/>
                 </div>
             </div>
             <div class="lower_section">
                 <div class="table-wrapper">
                     <p class="table_history">История сделок</p>
-                    <TableOperation />
+                    <TableOperation :columnHeaders="tableHeaders" :tableData="tableData" />
                 </div>
             </div>
         </div>
