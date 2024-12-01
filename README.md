@@ -9,3 +9,6 @@ Employee motivation system for the Novosibirsk hackathon Cookie Fest
 
 ## How to stop (Linux\Windows)
 `docker-compose dowm`
+
+P.S
+Если авторизация будет не работать, то переходите сразу по `/rateing` или `/profile`
