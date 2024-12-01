@@ -2,7 +2,7 @@
 
 # cookiefest_motivation
 
-Motivation system
+Employee motivation system for the Novosibirsk hackathon Cookie Fest
 
 ## How to run (Linux\Windows)
 `docker-compose up --build -d`
