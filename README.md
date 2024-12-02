@@ -10,6 +10,11 @@ Employee motivation system for the Novosibirsk hackathon Cookie Fest
 ## How to stop (Linux\Windows)
 `docker-compose dowm`
 
+## How to open
+`http://localhost:8080` - Frontend
+
+`http://localhost:3000` - Backend
+
 P.S
 Если авторизация будет не работать, то переходите сразу по `/rating` или `/profile`
 
